@@ -8,7 +8,7 @@ import CommentItem from './components/CommentItem'
 import CommentFooter from './components/CommentFooter'
 import { useParams } from 'react-router-dom'
 import { getArticleInfo } from '@/store/actions/article'
-import { useInitialState } from '@/utils/use-initial-state'
+import { useInitialState, useResetRedux } from '@/utils/use-initial-state'
 import { useEffect, useState, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import dayjs from 'dayjs'
@@ -31,6 +31,7 @@ dayjs.extend(LocalizedFormat) // 扩展转化方法
 const Article = () => {
   const dispatch = useDispatch()
   const history = useHistory()
+  useResetRedux('article') // 表示页面退出时 需要清理artice下的数据
   const { articleId } = useParams<{ articleId: string }>() // 获取路由参数对象
   const { detail } = useInitialState(() => getArticleInfo(articleId), 'article') // 自定义hook调用文章详情
   // 自定义hook调用评论  先获取对于文章的评论- 替换整个的评论数据

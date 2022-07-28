@@ -1,4 +1,4 @@
-import type { ArticleAction } from "@/types/store"
+import type { ArticleAction, ResetAction } from "@/types/store"
 import type { ArticleInfo, ArticleComment } from "@/types/data" // 引入文章详情类型
 type ArticleState = {
   detail: ArticleInfo // 文章详情
@@ -14,7 +14,7 @@ const inititalState: ArticleState = {
   // comment:
 } as ArticleState // 类型断言是主观上的一种判断 屏蔽ts的错 会有对应提示
 
-export default function article(state = inititalState, action: ArticleAction): ArticleState {
+export default function article(state = inititalState, action: ArticleAction | ResetAction): ArticleState {
   switch (action.type) {
     case "article/get":
       return { ...state, detail: action.payload } // 更新文章详情数据
@@ -46,6 +46,12 @@ export default function article(state = inititalState, action: ArticleAction): A
           comm_count: state.detail.comm_count + 1, // 在原来文章的基础上也加1
         },
       }
+      case "reset":
+        // 清理 有可能清理的是其他的reducer
+        if (action.payload === "article") {
+          return inititalState // 表示清空数据
+        }
+        return state
     default:
       return state
   }

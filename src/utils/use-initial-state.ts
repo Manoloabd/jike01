@@ -58,3 +58,18 @@ export const useAuthSet = () => {
   }, [history, token])
   return !!token
 }
+
+
+// 自定义hook处理退出时redux数据的清空问题
+
+// 约束只能清理 redux中特定的 key
+export const useResetRedux = <KeyName extends keyof RootState>(stateName: KeyName) => {
+  const dispatch = useDispatch()
+  // 处理数据 退出页面时处理
+  useEffect(() => {
+    return () => {
+      // 此时 会在页面卸载时调用
+      dispatch({ type: "reset", payload: stateName })
+    } // eslint-disable-next-line
+  }, [])
+}
