@@ -6,6 +6,7 @@ import ProfileEdit from '@/pages/Profile/Edit'
 import { customHistory } from './utils/history'
 import AuthRoute from './components/AuthRoute'
 import Article from './pages/Article'
+import Chat from './pages/Chat'
 
 function App() {
   return (
@@ -25,6 +26,10 @@ function App() {
           {/* 自定义鉴权路由 */}
           <AuthRoute path='/profile/edit'>
             <ProfileEdit></ProfileEdit>
+          </AuthRoute>
+          {/* 配置小智同学路由 */}
+          <AuthRoute path='/chat'>
+            <Chat></Chat>
           </AuthRoute>
           {/* 文章详情 必须登录才能看？？？ 文章详情 只有回复评论时才需要登录 */}
           <Route path='/article/:articleId' component={Article}></Route>
