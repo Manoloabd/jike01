@@ -12,12 +12,15 @@ type ChatRecord = {
 }
 const Chat = () => {
   const history = useHistory()
+  // 需要 一开始 就 先让小智说两句  聊天记录是一个数组
   const [chatList, setChatList] = useState<ChatRecord[]>([])
   const [value, setValue] = useState('')
   const socketRef = useRef<Socket>() // 使用ref指定泛型类型
   const listRef = useRef<HTMLDivElement>(null)
+  // 可以使用useRef
   //  建立通讯链接
   useEffect(() => {
+    // 尝试建立websocket通讯链接
     const socketIO = io('http://toutiao.itheima.net', {
       query: {
         token: getToken().token,
@@ -31,7 +34,7 @@ const Chat = () => {
       setChatList([
         {
           type: 'xz',
-          message: '欢迎来到聊天室',
+          message: '欢迎来到黑马程序员',
         },
         {
           type: 'xz',
@@ -51,7 +54,7 @@ const Chat = () => {
     return () => {
       socketIO.close()
     }
-  }, [chatList])
+  }, [])
   // 定义发送消息的一个方法
   const sendMessage = (event: React.KeyboardEvent<HTMLInputElement>) => {
     // 当键盘按下时 触发
@@ -73,6 +76,8 @@ const Chat = () => {
       setValue('') // 清空输入框
     }
   }
+  // 需要监听 聊天数组的变化
+  // useEffect
   useLayoutEffect(() => {
     // 监听数组的变化 数组一变化 页面渲染完毕
     if (listRef.current) {
