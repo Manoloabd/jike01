@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom'
 import Icon from '@/components/Icon'
 import styles from './index.module.scss'
 import { io, Socket } from 'socket.io-client'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useLayoutEffect } from 'react'
 import { getToken } from '@/utils/auth'
 type ChatRecord = {
   type: 'xz' | 'user'
@@ -15,6 +15,7 @@ const Chat = () => {
   const [chatList, setChatList] = useState<ChatRecord[]>([])
   const [value, setValue] = useState('')
   const socketRef = useRef<Socket>() // 使用ref指定泛型类型
+  const listRef = useRef<HTMLDivElement>(null)
   //  建立通讯链接
   useEffect(() => {
     const socketIO = io('http://toutiao.itheima.net', {
@@ -42,7 +43,7 @@ const Chat = () => {
       // 小智回了消息
       setChatList((list) => [...list, { message: data.msg, type: 'xz' }])
       // setChatList()
-      console.log(chatList)
+      // console.log(chatList)
     })
     socketIO.on('disconnect', () => {
       console.log('和极客园小智同学断开连接')
@@ -72,13 +73,19 @@ const Chat = () => {
       setValue('') // 清空输入框
     }
   }
+  useLayoutEffect(() => {
+    // 监听数组的变化 数组一变化 页面渲染完毕
+    if (listRef.current) {
+      listRef.current.scrollTop = listRef.current?.scrollHeight // 滚动到最底部
+    }
+  }, [chatList])
   return (
     <div className={styles.root}>
       <NavBar className='fixed-header' onBack={() => history.go(-1)}>
         小智同学
       </NavBar>
 
-      <div className='chat-list'>
+      <div className='chat-list' ref={listRef}>
         {/* 循环生成聊天记录 */}
         {chatList.map((item, index) => {
           return (
